@@ -1,0 +1,80 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "go",
+      "args": ["build", "-o", "video-folder-cleanup.exe", "."],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "go",
+      "args": ["test", "-v", "./..."],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Test (with coverage)",
+      "type": "shell",
+      "command": "go",
+      "args": ["test", "-v", "-cover", "-coverprofile=coverage.out", "./..."],
+      "group": "test",
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Benchmark",
+      "type": "shell",
+      "command": "go",
+      "args": ["test", "-bench=.", "-benchtime=1s", "-run=^$"],
+      "group": "test",
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Run (dry-run)",
+      "type": "shell",
+      "command": "./video-folder-cleanup.exe",
+      "args": ["${input:libraryPath}"],
+      "dependsOn": "Build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run (execute)",
+      "type": "shell",
+      "command": "./video-folder-cleanup.exe",
+      "args": ["--execute", "${input:libraryPath}"],
+      "dependsOn": "Build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "go",
+      "args": ["vet", "./..."],
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "Format",
+      "type": "shell",
+      "command": "go",
+      "args": ["fmt", "./..."],
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "libraryPath",
+      "type": "promptString",
+      "description": "Path to the library folder to scan"
+    }
+  ]
+}
