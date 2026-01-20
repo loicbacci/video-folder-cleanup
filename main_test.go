@@ -932,15 +932,22 @@ func containsSubstringHelper(s, substr string) bool {
 // ============================================================================
 
 func BenchmarkScanLibrary_Small(b *testing.B) {
-	tempDir, _ := os.MkdirTemp("", "bench-*")
+	tempDir, err := os.MkdirTemp("", "bench-*")
+	if err != nil {
+		b.Fatal(err)
+	}
 	defer os.RemoveAll(tempDir)
 
 	libraryDir := filepath.Join(tempDir, "Library")
 	for i := 0; i < 10; i++ {
 		for j := 0; j < 10; j++ {
 			path := filepath.Join(libraryDir, "Studio"+string(rune('A'+i)), "Movie"+string(rune('0'+j)), "movie.mkv")
-			os.MkdirAll(filepath.Dir(path), 0755)
-			os.WriteFile(path, []byte("test"), 0644)
+			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+				b.Fatal(err)
+			}
+			if err := os.WriteFile(path, []byte("test"), 0644); err != nil {
+				b.Fatal(err)
+			}
 		}
 	}
 
@@ -953,7 +960,10 @@ func BenchmarkScanLibrary_Small(b *testing.B) {
 }
 
 func BenchmarkScanLibrary_ConcurrencyComparison(b *testing.B) {
-	tempDir, _ := os.MkdirTemp("", "bench-*")
+	tempDir, err := os.MkdirTemp("", "bench-*")
+	if err != nil {
+		b.Fatal(err)
+	}
 	defer os.RemoveAll(tempDir)
 
 	libraryDir := filepath.Join(tempDir, "Library")
@@ -961,8 +971,12 @@ func BenchmarkScanLibrary_ConcurrencyComparison(b *testing.B) {
 		for j := 0; j < 20; j++ {
 			path := filepath.Join(libraryDir, "Studio"+string(rune('A'+i%26))+string(rune('0'+i/26)),
 				"Movie"+string(rune('0'+j%10))+string(rune('0'+j/10)), "movie.mkv")
-			os.MkdirAll(filepath.Dir(path), 0755)
-			os.WriteFile(path, []byte("test"), 0644)
+			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+				b.Fatal(err)
+			}
+			if err := os.WriteFile(path, []byte("test"), 0644); err != nil {
+				b.Fatal(err)
+			}
 		}
 	}
 
